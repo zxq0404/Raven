@@ -6,4 +6,6 @@ On one side, we have a lot of traffic cameras with live video streams, although 
 
 Raven is implemented by the following data pipeline:
 
-![alt text] (docs/Raven_pipeline.png)
+![pipeline](https://github.com/zxq0404/Raven/docs/Raven_pipeline.png)
+
+
