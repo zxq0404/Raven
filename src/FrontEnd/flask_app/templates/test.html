@@ -1,0 +1,19 @@
+<html>
+
+<head>
+  <!-- Bokeh includes-->
+  <link rel="stylesheet" href="http://cdn.pydata.org/bokeh/release/bokeh-1.0.4.min.css" type="text/css" />
+  <script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-1.0.4.min.js"></script>
+</head>
+
+   <body>
+     <select name= cameras method="GET" action="/">
+       {% for camera in cameras %}
+       <option value= "{{camera}}" SELECTED>{{camera}}</option>"
+       {% endfor %}
+     </select>
+     <input type="submit" value="Submit">
+     {{ bokeh_feed[0]|safe }}
+     {{ bokeh_feed[1]|safe }}
+   </body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script>
+window.onload = function () {
+
+var dps1 = [];
+var dps2 = []; // dataPoints
+var chart = new CanvasJS.Chart("chartContainer", {
+	title :{
+		text: "Car Counts"
+	},
+	axisX: {
+		title: "Elasped time (s)",
+	},
+	axisY: {
+		title: "Number of Cars",
+		includeZero: false
+	},
+	data: [{
+		name: "Newark@NY",
+		showInLegend: true,
+		xValueType: "dateTime",
+		legendText: "Newark@NY",
+		type: "line",
+		dataPoints: dps1
+	},
+{
+	name: "Richmond@VA",
+	showInLegend: true,
+	xValueType: "dateTime",
+	legendText: "Richmond@VA",
+	type: "line",
+	dataPoints: dps2}]}
+);
+
+var dataLength = 300; // number of dataPoints visible at any point
+
+
+var ws = new WebSocket("ws://127.0.0.1:5678/")
+var video_feed = document.getElementById("video_feed")
+ws.onmessage = function (event) {
+
+    var message = JSON.parse(event.data);
+		if (message.camera =="Newark_NY") {
+			video_feed.setAttribute("src", "data: image/jpg;base64, " + message.img_b64);
+			dps1.push({
+				x: message.timestamp,
+				y: message.boxnum
+			});
+		}
+		if (message.camera == "Richmond_VA") {
+			dps2.push({
+				x: message.timestamp,
+				y: message.boxnum
+			});
+		}
+
+		if (dps1.length > dataLength) {
+			dps1.shift();
+		}
+		if (dps2.length > dataLength) {
+			dps2.shift();
+		}
+		chart.render();
+
+  }
+
+}
+</script>
+</head>
+<body>
+<div id="chartContainer" style="height: 300px; width: 900px;"></div>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<img id="video_feed" src="data:image/jpg;base64, ..." alt="foobar" />
+</body>
+</html>

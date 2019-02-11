@@ -1,0 +1,50 @@
+Requirements and setup
+
+On Instance "Front End":
+export SERVER=ubuntu@ec2-3-93-109-117.compute-1.amazonaws.com
+ssh -i ~/.ssh/x
+conda install -c conda-forge matplotlib
+conda install -c anaconda zeromq
+conda install -c conda-forge opencv
+conda install -c anaconda flask
+
+
+wget https://www.sqlite.org/2019/sqlite-tools-linux-x86-3270100.zip
+sudo apt-get install zip unzip
+sudo apt-get install sqlite3 libsqlite3-dev
+ conda install -c kbchoi pysqlite
+
+on CAMERA instance:
+
+conda install -c anaconda zeromq
+conda install -c conda-forge opencv
+
+
+On instance "STREAMER":
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+
+bash Miniconda3-latest-Linux-x86_64.sh
+
+conda create insight
+
+conda activate insight
+
+conda install -c anaconda zeromq
+
+
+GPUTEST:
+
+conda install -c anaconda zeromq
+
+
+WORKER2:
+
+source activate amazonei_tensorflow_p36
+pip install zmq
+pip install opencv-python
+pip install --ignore-installed --upgrade "Download URL"
+scp -i ~/.ssh/xiaoqingzhou-IAM-keypair.pem frozen_inference_graph.pb $WORKER2:frozen_inference_graph.pb
+scp -i ~/.ssh/xiaoqingzhou-IAM-keypair.pem dummy.jpg $WORKER2:dummy.jpg
+scp -i ~/.ssh/xiaoqingzhou-IAM-keypair.pem Ingest_and_Count.py $WORKER1:worker.py
+scp -i ~/.ssh/xiaoqingzhou-IAM-keypair.pem speedtest.py $WORKER1:speedtest.py
+scp -i ~/.ssh/xiaoqingzhou-IAM-keypair.pem zmq_pull.py $WORKER1:zmq_pull.py
