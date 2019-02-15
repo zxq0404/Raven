@@ -45,7 +45,7 @@ def producer(source, limit):
             meta_data = {'camera' : source.replace("@","_"),
                     'url':source_url,
                     'counter':str(i),
-                    'time':str(time.time())}
+                    'time':str(time.time()*1000)}
             zmq_socket.send_json(meta_data, flags=zmq.SNDMORE)
             zmq_socket.send(message)
         else:

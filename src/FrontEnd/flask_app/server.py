@@ -6,7 +6,7 @@ import numpy as np
 import urllib
 import time
 
-IP = "tcp://34.239.152.41:5558"
+IP = "tcp://*:5558"
 #        print('consumer started...Ingest images from ', IP)
 context = zmq.Context()
     # recieve work
@@ -38,12 +38,63 @@ def overlay_boxes(boxes,image):
         image[x1:x2+1,y1:y1+3,0] = 255
         image[x1:x2+1,y2:y2+3,0] = 255
 
+def bubble_insert(array, number):
+# Insert a new number into the numpy array.
+    i = 0
+    pop_num = array[-1]
+    while number<array[i] and i<len(array):
+        i+=1
+    array[i+1:] = array[i:-1]
+    array[i]=number
 
+    return pop_num
 
+class Dory:
+# A very lightweight prototype database in memory. Named after Dolly the goldfish with very short memory.
+    def __init__(self, maxsize = 16):
+        self.limit = maxsize
+        self.record = dict()
+# A buffer that saves the data. We want it to maintain a order sorted by the "counter" key
+# but don't want to sort the dictionary every time. The maximum number of the dictionary is "maxsize".
+        self.bookkeeper =dict()
+        self.output = [None]*3
+
+# A dictionary /that keeps track of the order of the buffer dictionary items.
+
+    def look(self, meta_data, message):
+        try:
+            camera_name = meta_data["camera"]
+            timestamp = float(meta_data["timestamp"])
+            counter = int(meta_data["counter"])
+            boxes = meta_data["boxes"]
+            if camera_name not in self.record:
+                print("create new")
+                self.record[camera_name] ={counter:[timestamp, boxes, message]}
+                self.bookkeeper[camera_name] = np.zeros(self.limit).astype("int")
+                self.bookkeeper[camera_name][0]=counter
+                pop_num=0
+            else:
+                print("not new")
+                self.record[camera_name][counter] = [timestamp, boxes, message]
+                pop_num = bubble_insert(self.bookkeeper[camera_name],counter)
+                print("pop_num is", pop_num)
+                if pop_num>0:
+                    self.output = self.record[camera_name][pop_num]
+                    self.record[camera_name].pop(pop_num)
+        except:
+            print("Error occurred during operation")
+        return pop_num
+
+        def count(self):
+# reserved for future improvements.
+            pass
+
+dory = Dory()
 async def trigger(websocket,path):
     while True:
         meta_data = consumer_receiver.recv_json()
         img_msg = consumer_receiver.recv()
+
         camera_name = meta_data["camera"]
         timestamp = int(float(meta_data["time"])*1000)
         counter = int(meta_data["counter"])
@@ -64,7 +115,7 @@ async def trigger(websocket,path):
         await websocket.send(json.dumps(message))
         await asyncio.sleep(0.02)
 
-start_server = websockets.serve(trigger, '127.0.0.1',5678)
+start_server = websockets.serve(trigger, '0.0.0.0',5678)
 
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()

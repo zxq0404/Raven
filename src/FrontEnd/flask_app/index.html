@@ -6,6 +6,9 @@ window.onload = function () {
 
 var dps1 = [];
 var dps2 = []; // dataPoints
+var dps3 = [];
+var dps4 = [];
+
 var chart = new CanvasJS.Chart("chartContainer", {
 	title :{
 		text: "Car Counts"
@@ -31,13 +34,31 @@ var chart = new CanvasJS.Chart("chartContainer", {
 	xValueType: "dateTime",
 	legendText: "Richmond@VA",
 	type: "line",
-	dataPoints: dps2}]}
+	dataPoints: dps2
+},
+{
+	name: "Gallup@NM",
+	showInLegend: true,
+	xValueType: "dateTime",
+	legendText: "Gallup@NM",
+	type: "line",
+	dataPoints: dps3
+},
+{
+	name: "Jamestown@ND",
+	showInLegend: true,
+	xValueType: "dateTime",
+	legendText: "Jamestown@ND",
+	type: "line",
+	dataPoints: dps4
+}
+]}
 );
 
 var dataLength = 300; // number of dataPoints visible at any point
 
 
-var ws = new WebSocket("ws://127.0.0.1:5678/")
+var ws = new WebSocket("ws://18.207.129.170:5678/")
 var video_feed = document.getElementById("video_feed")
 ws.onmessage = function (event) {
 
@@ -55,13 +76,33 @@ ws.onmessage = function (event) {
 				y: message.boxnum
 			});
 		}
-
-		if (dps1.length > dataLength) {
+		if (message.camera == "Gallup_NM") {
+			dps3.push({
+				x: message.timestamp,
+				y: message.boxnum
+			});
+		}
+		if (message.camera == "Jamestown_ND") {
+			dps4.push({
+				x: message.timestamp,
+				y: message.boxnum
+			});
+		}
+		if (dps1.length > 2*dataLength) {
 			dps1.shift();
 		}
+
 		if (dps2.length > dataLength) {
 			dps2.shift();
 		}
+
+		if (dps3.length > dataLength) {
+			dps2.shift();
+		}
+		if (dps4.length > dataLength) {
+			dps2.shift();
+		}
+
 		chart.render();
 
   }
@@ -70,7 +111,7 @@ ws.onmessage = function (event) {
 </script>
 </head>
 <body>
-<div id="chartContainer" style="height: 300px; width: 900px;"></div>
+<div id="chartContainer" style="height: 300px; width: 750px;"></div>
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 <img id="video_feed" src="data:image/jpg;base64, ..." alt="foobar" />
 </body>
