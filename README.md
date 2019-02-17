@@ -1,8 +1,6 @@
 # Raven
 
-Raven stands for "Real-time Attentive Video Enhancement Network". It is inspired by the three-eyed raven in game of thrones, who has "a thousand eyes and one", and apparently sees everything. The three eyed raven is magic of course, but we are pretty good at using modern technology to do magic.
-
-On one side, we have a lot of traffic cameras with live video streams, although most humans are probably disinterested in paying attention to these videos. On the other hand, computer vision has progressed a lot over the last few years, and for some jobs it may do better than human. So we can basically put 2 and 2 together and build Raven, a computer network that applies deep learning computer vision algorithm at scale, and provides real time analytics to the users.
+Raven stands for "Real-time Attentive Video Enhancement Network". It is inspired by the three-eyed raven in game of thrones, who has "a thousand eyes and one", and apparently sees everything. The three eyed raven is magic of course, but we are pretty good at using modern technology to do magic. The main idea is to use a distributed system on the cloud to handle multiple live camera streams, with objection detection algorithm to provide real-time analytics of the cameras streams to the users.
 
 Raven is implemented by the following data pipeline:
 
@@ -14,10 +12,13 @@ The sorted data is also sent to a webserver where real time analytics are presen
 
 ![pipeline](https://github.com/zxq0404/Raven/blob/master/docs/Raven_demo.png)
 
-The number of cars as a function of time are presented in the chart for three different cameras. The corresponding video with objection detection results (blue boxes around the cars) are shown in the video below. Clicking on the legend to switch between different cameras.
+The number of cars detected as a function of time are presented in the chart for three different cameras. The corresponding video stream with objection detection results (blue boxes around the cars) are shown in the video below, while clicking on the legends allows switching between different cameras. 
 
+4 worker instances were used to monitor these three cameras in real time (i.e. no noticable delay to the user), with a cost of about $5 per camera per day. To scale the number of cameras, simply increase the number of worker instances.
 
 ## Folder Structure 
+
+The folder structure are listed below:
 
 ├── docs                    # Documentation files 
 
@@ -29,7 +30,7 @@ The number of cars as a function of time are presented in the chart for three di
 
 └── README.md
 
-
+The bash file and source code for each type of instances are provided in the relevant folders.
 
 
 
