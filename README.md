@@ -6,24 +6,29 @@ Raven is implemented by the following data pipeline:
 
 ![pipeline](https://github.com/zxq0404/Raven/blob/master/docs/Raven_pipeline.png)
 
-In the "Camera" instances, the camera live video streams are break into frames and sent to a messaging broker system ZeroMQ queue, which sits on the "Broker" instance. The "Worker" instances, equiped with an objection detection algorithm on the TensorFlow framework, pulls the frames from the queue and applies transfer learning on these frames. The ZeroMQ queue thus serves as a load-balancer. The objection come out in order that they were generated, I wrote a heap "Dory" as a short term memory  (named after the character in "Finding Dory") to sort things out. After "Dory" the sorted results are saved to a SQLite database, i.e. long term memory. 
+In the "Camera" instances, the camera live video streams are break into frames and sent to a messaging broker system ZeroMQ queue, which sits on the "Broker" instance. The "Worker" instances, equiped with an objection detection algorithm on the TensorFlow framework, pulls the frames from the queue and applies transfer learning on these frames. The ZeroMQ queue thus serves as a load-balancer. The objection come out in order that they were generated, I wrote a heap "Dory" as a short term memory  (named after the character in "Finding Dory") to sort things out. After "Dory" the sorted results are saved to a SQLite database, i.e. long term memory.
 
 The sorted data is also sent to a webserver where real time analytics are presented along with the original frames. It looks like this:
 
 ![pipeline](https://github.com/zxq0404/Raven/blob/master/docs/Raven_demo.png)
 
-The number of cars detected as a function of time are presented in the chart for three different cameras. The corresponding video stream with objection detection results (blue boxes around the cars) are shown in the video below, while clicking on the legends allows switching between different cameras. 
+The number of cars detected as a function of time are presented in the chart for three different cameras. The corresponding video stream with objection detection results (blue boxes around the cars) are shown in the video below, while clicking on the legends allows switching between different cameras.
 
 4 worker instances were used to monitor these three cameras in real time (i.e. no noticable delay to the user), with a cost of about $5 per camera per day. To scale the number of cameras, simply increase the number of worker instances.
 
-## Folder Structure 
+## Folder Structure
 
 The folder structure are listed below:
 
-├── docs                    # Documentation files 
+├── docs                    # Documentation files
 
-├── src                     # Source files 
-
+├── src                     # Source files
+      ├── Camera_Instance   # Instance that ingest data from IP cameras
+      ├── Broker_Instance   # Instance that serves as message Broker
+      ├── Worker_Instance   # Instances that run objection detection algorithms
+      ├── Dory              # Instance that sort the processed camera frames and save the data
+      ├── FrontEnd          # Instance that runs the front-end webserver
+      
 ├── test                    # Tests
 
 ├── LICENSE
@@ -31,6 +36,3 @@ The folder structure are listed below:
 └── README.md
 
 The bash file and source code for each type of instances are provided in the relevant folders.
-
-
-

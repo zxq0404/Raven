@@ -11,42 +11,38 @@ import time
 class CarDetector(object):
     def __init__(self, frozen_graph):
 
-        #Tensorflow localization/detection model
-        # Single-shot-dectection with mobile net architecture trained on COCO dataset
-
-        # setup tensorflow graph
+# Tensorflow localization/detection model
+# Single-shot-dectection with mobile net architecture trained on COCO dataset
+# setup tensorflow graph
         self.detection_graph = tf.Graph()
 
-        # configuration for possible GPU use
+# configuration for possible GPU use
         config = tf.ConfigProto()
         config.gpu_options.allow_growth = True
 
-        # load frozen tensorflow detection model and initialize
-        # the tensorflow graph
+# load frozen tensorflow detection model and initialize
+# the tensorflow graph
 
         with tf.gfile.GFile(frozen_graph, "rb") as f:
             self.graph_def = tf.GraphDef()
             self.graph_def.ParseFromString(f.read())
 
-        # import the graph_def into a new Graph and returns it
+# import the graph_def into a new Graph and returns it
         with self.detection_graph.as_default():
             tf.import_graph_def(self.graph_def, name="")
 
             self.sess = tf.Session(graph=self.detection_graph, config=config)
             self.image_tensor = self.detection_graph.get_tensor_by_name('image_tensor:0')
-              # Each box represents a part of the image where a particular object was detected.
+# Each box represents a part of the image where a particular object was detected.
             self.boxes = self.detection_graph.get_tensor_by_name('detection_boxes:0')
-              # Each score represent how level of confidence for each of the objects.
-              # Score is shown on the result image, together with the class label.
+# Each score represent how level of confidence for each of the objects.
+# Score is shown on the result image, together with the class label.
             self.scores =self.detection_graph.get_tensor_by_name('detection_scores:0')
             self.classes = self.detection_graph.get_tensor_by_name('detection_classes:0')
             self.num_detections =self.detection_graph.get_tensor_by_name('num_detections:0')
         self.image_width = 640
         self.image_height = 480
 
- #   def box_normal_to_pixel(self, box):
-  #      box_pixel = [int(box[0]*self.image_height), int(box[1]*self.image_width), int(box[2]*self.image_height), int(box[3]*self.image_width)]
-   #     return np.array(box_pixel)
 
     def detect(self, image):
         """

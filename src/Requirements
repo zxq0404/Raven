@@ -12,7 +12,8 @@ conda install -c anaconda flask
 wget https://www.sqlite.org/2019/sqlite-tools-linux-x86-3270100.zip
 sudo apt-get install zip unzip
 sudo apt-get install sqlite3 libsqlite3-dev
- conda install -c kbchoi pysqlite
+conda install -c kbchoi pysqlite
+scp -i ~/.ssh/xiaoqingzhou-IAM-keypair.pem server2.py $SERVER:server2.py
 
 on CAMERA instance:
 
@@ -46,5 +47,5 @@ pip install --ignore-installed --upgrade "Download URL"
 scp -i ~/.ssh/xiaoqingzhou-IAM-keypair.pem frozen_inference_graph.pb $WORKER2:frozen_inference_graph.pb
 scp -i ~/.ssh/xiaoqingzhou-IAM-keypair.pem dummy.jpg $WORKER2:dummy.jpg
 scp -i ~/.ssh/xiaoqingzhou-IAM-keypair.pem Ingest_and_Count.py $WORKER1:worker.py
-scp -i ~/.ssh/xiaoqingzhou-IAM-keypair.pem speedtest.py $WORKER1:speedtest.py
-scp -i ~/.ssh/xiaoqingzhou-IAM-keypair.pem zmq_pull.py $WORKER1:zmq_pull.py
+scp -i ~/.ssh/xiaoqingzhou-IAM-keypair.pem speedtest.py $WORKER3:speedtest.py
+scp -i ~/.ssh/xiaoqingzhou-IAM-keypair.pem zmq_pull.py $WORKER3:zmq_pull.py

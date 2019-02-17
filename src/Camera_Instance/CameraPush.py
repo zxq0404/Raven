@@ -6,6 +6,7 @@ import cv2
 import threading
 import sys
 
+# IP cameras' address that I found online.
 IPcameras = {}
 IPcameras["Gallup@NM"] = "http://207.192.232.2:8000/mjpg/video.mjpg?timestamp=1548280479340"
 IPcameras["Agua Fria@NM"] = "http://166.241.180.137/mjpg/video.mjpg?timestamp=1548281679736"
@@ -28,7 +29,7 @@ def producer(source, limit):
     context = zmq.Context()
     zmq_socket = context.socket(zmq.PUSH)
     zmq_socket.connect("tcp://10.0.0.9:5556")
-#    zmq_socket.setsockopt(zmq.LINGER, -1)
+# intialize the zmq connection to the broker
     source_url = IPcameras[source]
     print("Capturing video stream from ", source)
     start = time.time()
@@ -42,6 +43,7 @@ def producer(source, limit):
             i+=1
             ret, buff = cv2.imencode('.jpg', frame)
             message = base64.b64encode(buff)
+# Capture and send message
             meta_data = {'camera' : source.replace("@","_"),
                     'url':source_url,
                     'counter':str(i),
@@ -54,13 +56,17 @@ def producer(source, limit):
         time.sleep(.02)
     end = time.time()
     elasped =int((end-start))
+# check the video capture speed
     print("%d images captured in %d seconds." % (i, elasped))
     capture.release()
 
 if __name__=="__main__":
-#    producer(str(sys.argv[1]), int(sys.argv[2]))
+#   Captures video frames from three different IP cameras using multithread
 
-   t1 = threading.Thread(target = producer, args=(sys.argv[1],int(sys.argv[3]),))
-   t2 = threading.Thread(target = producer, args=(sys.argv[2],int(sys.argv[3]),))
+   t1 = threading.Thread(target = producer, args=(sys.argv[1],int(sys.argv[4]),))
+   t2 = threading.Thread(target = producer, args=(sys.argv[2],int(sys.argv[4]),))
+   t3 = threading.Thread(target = producer, args=(sys.argv[3],int(sys.argv[4]),))
+
    t1.start()
    t2.start()
+   t3.start()
