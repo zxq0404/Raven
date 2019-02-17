@@ -19,6 +19,7 @@ The number of cars detected as a function of time are presented in the chart for
 ## Folder Structure
 
 The folder structure are listed below:
+```
 
 ├── docs                    # Documentation files
 
@@ -28,11 +29,11 @@ The folder structure are listed below:
       ├── Worker_Instance   # Instances that run objection detection algorithms
       ├── Dory              # Instance that sort the processed camera frames and save the data
       ├── FrontEnd          # Instance that runs the front-end webserver
-      
+
 ├── test                    # Tests
 
 ├── LICENSE
 
 └── README.md
-
+```
 The bash file and source code for each type of instances are provided in the relevant folders.
